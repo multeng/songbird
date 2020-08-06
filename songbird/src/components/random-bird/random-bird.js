@@ -6,17 +6,17 @@ export default class RandomBird extends Component {
     return (
       <div className="random-bird jumbotron">
         <img
-          class="bird-image"
+          className="bird-image"
           src="https://live.staticflickr.com/65535/48456345286_dbc8530027.jpg"
           alt="Козодой"
         ></img>
         <div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
+          <ul className="list-group list-group-flush">
+            <li className="list-group-item">
               <h3>Козодой</h3>
             </li>
-            <li class="list-group-item">
-              <div class="audio-player">
+            <li className="list-group-item">
+              <div className="audio-player">
                 <audio src="" hidden=""></audio>
               </div>
             </li>
