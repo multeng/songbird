@@ -1,31 +1,28 @@
 import React from "react";
+
 import "./answers-list.css";
 
-const AnswersList = () => {
-  return (
-    <div className="col-md-6">
-      <ul className="item-list list-group">
-        <li className="list-group-item">
-          <span className="li-btn"></span>Ворон
+export default class AnswersList extends React.Component {
+  render() {
+    const { list, checkAnswer } = this.props;
+    const elemnts = list.map((item) => {
+      const { id, ruName } = item;
+      return (
+        <li
+          key={id}
+          className="list-group-item"
+          onClick={() => checkAnswer(id)}
+        >
+          <span className="li-btn"></span>
+          {ruName}
         </li>
-        <li className="list-group-item">
-          <span className="li-btn"></span>Журавль
-        </li>
-        <li className="list-group-item">
-          <span className="li-btn"></span>Ласточка
-        </li>
-        <li className="list-group-item">
-          <span className="li-btn"></span>Козодой
-        </li>
-        <li className="list-group-item">
-          <span className="li-btn"></span>Кукушка
-        </li>
-        <li className="list-group-item">
-          <span className="li-btn"></span>Синица
-        </li>
-      </ul>
-    </div>
-  );
-};
+      );
+    });
 
-export default AnswersList;
+    return (
+      <div className="col-md-6">
+        <ul className="item-list list-group">{elemnts}</ul>
+      </div>
+    );
+  }
+}

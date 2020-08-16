@@ -5,6 +5,9 @@
 }
 .card {
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .playback-button {
   width: 40px;
