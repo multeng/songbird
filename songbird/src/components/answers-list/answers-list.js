@@ -6,13 +6,16 @@ export default class AnswersList extends React.Component {
   render() {
     const { list, checkAnswer } = this.props;
     const elemnts = list.map((item) => {
-      const { id, ruName } = item;
+      const { id, ruName, failed, success } = item;
+      let className = "list-group-item answer";
+      if (failed) {
+        className += " failed";
+      }
+      if (success) {
+        className += " success";
+      }
       return (
-        <li
-          key={id}
-          className="list-group-item"
-          onClick={() => checkAnswer(id)}
-        >
+        <li key={id} className={className} onClick={() => checkAnswer(id)}>
           <span className="li-btn"></span>
           {ruName}
         </li>

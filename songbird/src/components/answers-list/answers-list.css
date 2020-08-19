@@ -1,6 +1,12 @@
-.list-group-item:hover {
+.answer:hover {
   background-color: #9d9191;
 }
-.list-group-item {
+.answer {
   cursor: pointer;
+}
+.failed {
+  background-color: tomato;
+}
+.success {
+  background-color: turquoise;
 }

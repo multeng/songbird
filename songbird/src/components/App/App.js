@@ -14,22 +14,54 @@ export default class App extends Component {
     clicked: false,
     questionBird: this.createRandomBird(this._round),
     answered: false,
+    points: 5,
+    score: 0,
+    nextLevel: false,
   };
 
   checkAnswer = (id) => {
-    const { dataSet, questionBird } = this.state;
+    const { dataSet, questionBird, answered, points } = this.state;
     const idx = dataSet.findIndex((el) => el.id === id);
     const clickedElement = dataSet[idx];
-    if (clickedElement.id === questionBird.id) {
-      console.log("ZALUPA");
-      this.setState(({ answered }) => {
-        return { answered: true };
-      });
+    if (!answered) {
+      if (clickedElement.id === questionBird.id) {
+        this.setState(() => {
+          return {
+            dataSet: this.changeProperty(dataSet, id, "success"),
+            answered: true,
+            score: points,
+            nextLevel: true,
+          };
+        });
+      } else {
+        this.setState(() => {
+          return {
+            dataSet: this.changeProperty(dataSet, id, "failed"),
+            answered: false,
+            points: points - 1,
+          };
+        });
+      }
     }
-    this.setState(({ clickedObj }) => {
-      return { clickedObj: clickedElement, clicked: true };
+    this.setState(({ dataSet }) => {
+      return {
+        clickedObj: this.changeClickedElement(dataSet, id),
+        clicked: true,
+      };
     });
   };
+
+  changeProperty(arr, id, prop) {
+    const idx = arr.findIndex((el) => el.id === id);
+    const oldItem = arr[idx];
+    const newItem = { ...oldItem, [prop]: true };
+    return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
+  }
+
+  changeClickedElement(arr, id) {
+    const idx = arr.findIndex((el) => el.id === id);
+    return arr[idx];
+  }
 
   createData(dataSet, round) {
     return dataSet[round].map(this.addFields);
@@ -54,16 +86,24 @@ export default class App extends Component {
   }
 
   render() {
-    const { dataSet, questionBird, answered, ...someProps } = this.state;
+    const {
+      dataSet,
+      questionBird,
+      answered,
+      score,
+      nextLevel,
+      ...someProps
+    } = this.state;
     return (
       <div>
-        <Header />
+        <Header score={score} />
         <Levels />
         <RandomBird questionBird={questionBird} answered={answered} />
         <GameFields
           list={dataSet}
           checkAnswer={this.checkAnswer}
           someProps={someProps}
+          nextLevel={nextLevel}
         />
       </div>
     );
