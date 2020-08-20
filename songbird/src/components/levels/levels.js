@@ -1,41 +1,24 @@
 import React from "react";
 import "./levels.css";
+import titles from "../../services/titles";
 
-const Levels = () => {
-  return (
-    <ul className="pagination">
-      <li className="page-item active">
+const Levels = ({ round }) => {
+  const titlesElements = titles.map((item, index) => {
+    const { id, title } = item;
+    let className = "page-item";
+    if (index === round) {
+      className += " active";
+    }
+    return (
+      <li key={id} className={className}>
         <a className="page-link" href="/#">
-          Разминка
+          {title}
         </a>
       </li>
-      <li className="page-item">
-        <a className="page-link" href="/#">
-          Воробьиные
-        </a>
-      </li>
-      <li className="page-item">
-        <a className="page-link" href="/#">
-          Лесные птицы
-        </a>
-      </li>
-      <li className="page-item">
-        <a className="page-link" href="/#">
-          Певчие птицы
-        </a>
-      </li>
-      <li className="page-item">
-        <a className="page-link" href="/#">
-          Хищные птицы
-        </a>
-      </li>
-      <li className="page-item">
-        <a className="page-link" href="/#">
-          Морские птицы
-        </a>
-      </li>
-    </ul>
-  );
+    );
+  });
+
+  return <ul className="pagination">{titlesElements}</ul>;
 };
 
 export default Levels;

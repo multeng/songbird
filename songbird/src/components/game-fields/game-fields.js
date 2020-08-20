@@ -3,7 +3,13 @@ import AnswersList from "../answers-list";
 import BirdInfo from "../bird-info";
 import "./game-fields.css";
 
-const GameFields = ({ list, checkAnswer, someProps, nextLevel }) => {
+const GameFields = ({
+  list,
+  checkAnswer,
+  someProps,
+  nextLevel,
+  onNextLevel,
+}) => {
   let className = "btn btn-success";
   if (!nextLevel) {
     className += " disable";
@@ -13,7 +19,9 @@ const GameFields = ({ list, checkAnswer, someProps, nextLevel }) => {
     <div className="row mb2">
       <AnswersList list={list} checkAnswer={checkAnswer} />
       <BirdInfo someProps={someProps} />
-      <button className={className}>Next Level</button>
+      <button className={className} onClick={() => onNextLevel()}>
+        Next Level
+      </button>
     </div>
   );
 };

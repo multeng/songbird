@@ -7,12 +7,12 @@ import "./App.css";
 import dataBirds from "../../services/data";
 
 export default class App extends Component {
-  _round = 1;
+  round = 0;
   state = {
-    dataSet: this.createData(dataBirds, this._round),
+    dataSet: this.createData(dataBirds, this.round),
     clickedObj: null,
     clicked: false,
-    questionBird: this.createRandomBird(this._round),
+    questionBird: this.createRandomBird(this.round),
     answered: false,
     points: 5,
     score: 0,
@@ -20,7 +20,7 @@ export default class App extends Component {
   };
 
   checkAnswer = (id) => {
-    const { dataSet, questionBird, answered, points } = this.state;
+    const { dataSet, questionBird, answered, points, score } = this.state;
     const idx = dataSet.findIndex((el) => el.id === id);
     const clickedElement = dataSet[idx];
     if (!answered) {
@@ -29,11 +29,14 @@ export default class App extends Component {
           return {
             dataSet: this.changeProperty(dataSet, id, "success"),
             answered: true,
-            score: points,
+            score: score + points,
             nextLevel: true,
           };
         });
-      } else {
+      } else if (
+        clickedElement.id !== questionBird.id &&
+        !clickedElement.failed
+      ) {
         this.setState(() => {
           return {
             dataSet: this.changeProperty(dataSet, id, "failed"),
@@ -51,17 +54,17 @@ export default class App extends Component {
     });
   };
 
-  changeProperty(arr, id, prop) {
+  changeProperty = (arr, id, prop) => {
     const idx = arr.findIndex((el) => el.id === id);
     const oldItem = arr[idx];
     const newItem = { ...oldItem, [prop]: true };
     return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
-  }
+  };
 
-  changeClickedElement(arr, id) {
+  changeClickedElement = (arr, id) => {
     const idx = arr.findIndex((el) => el.id === id);
     return arr[idx];
-  }
+  };
 
   createData(dataSet, round) {
     return dataSet[round].map(this.addFields);
@@ -84,6 +87,21 @@ export default class App extends Component {
     newObj.failed = false;
     return newObj;
   }
+  onNextLevel = () => {
+    console.log("Переход на следующий уровень");
+    this.round += 1;
+    this.setState(() => {
+      return {
+        dataSet: this.createData(dataBirds, this.round),
+        clickedObj: null,
+        clicked: false,
+        questionBird: this.createRandomBird(this.round),
+        answered: false,
+        points: 5,
+        nextLevel: false,
+      };
+    });
+  };
 
   render() {
     const {
@@ -97,13 +115,14 @@ export default class App extends Component {
     return (
       <div>
         <Header score={score} />
-        <Levels />
+        <Levels round={this.round} />
         <RandomBird questionBird={questionBird} answered={answered} />
         <GameFields
           list={dataSet}
           checkAnswer={this.checkAnswer}
           someProps={someProps}
           nextLevel={nextLevel}
+          onNextLevel={this.onNextLevel}
         />
       </div>
     );
