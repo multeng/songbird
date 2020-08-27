@@ -3,10 +3,15 @@ import Header from "../header";
 import Levels from "../levels";
 import RandomBird from "../random-bird";
 import GameFields from "../game-fields";
+import GameOver from "../game-over";
 import "./App.css";
 import dataBirds from "../../services/data";
+import winSoundFile from "../../assets/sounds/win.mp3";
+import errorSoundFile from "../../assets/sounds/error.mp3";
 
 export default class App extends Component {
+  winSound = winSoundFile;
+  errorSound = errorSoundFile;
   round = 0;
   state = {
     dataSet: this.createData(dataBirds, this.round),
@@ -17,6 +22,7 @@ export default class App extends Component {
     points: 5,
     score: 0,
     nextLevel: false,
+    endGame: false,
   };
 
   checkAnswer = (id) => {
@@ -25,6 +31,7 @@ export default class App extends Component {
     const clickedElement = dataSet[idx];
     if (!answered) {
       if (clickedElement.id === questionBird.id) {
+        this.playWinSong();
         this.setState(() => {
           return {
             dataSet: this.changeProperty(dataSet, id, "success"),
@@ -38,6 +45,7 @@ export default class App extends Component {
         !clickedElement.failed
       ) {
         this.setState(() => {
+          this.playErrorSong();
           return {
             dataSet: this.changeProperty(dataSet, id, "failed"),
             answered: false,
@@ -72,7 +80,6 @@ export default class App extends Component {
 
   createRandomBird(round) {
     const randomIndex = this.randomInteger();
-    console.log(randomIndex);
     return dataBirds[round][randomIndex];
   }
 
@@ -87,9 +94,41 @@ export default class App extends Component {
     newObj.failed = false;
     return newObj;
   }
+
+  playWinSong = () => {
+    const audio = new Audio(winSoundFile);
+    audio.play();
+  };
+
+  playErrorSong = () => {
+    const audio = new Audio(errorSoundFile);
+    audio.play();
+  };
+
   onNextLevel = () => {
-    console.log("Переход на следующий уровень");
-    this.round += 1;
+    if (this.round === 5) {
+      this.setState(() => {
+        return {
+          endGame: true,
+        };
+      });
+    } else if (this.round !== 5) {
+      this.round += 1;
+      this.setState(() => {
+        return {
+          dataSet: this.createData(dataBirds, this.round),
+          clickedObj: null,
+          clicked: false,
+          questionBird: this.createRandomBird(this.round),
+          answered: false,
+          points: 5,
+          nextLevel: false,
+        };
+      });
+    }
+  };
+  newGame = () => {
+    this.round = 0;
     this.setState(() => {
       return {
         dataSet: this.createData(dataBirds, this.round),
@@ -99,6 +138,8 @@ export default class App extends Component {
         answered: false,
         points: 5,
         nextLevel: false,
+        score: 0,
+        endGame: false,
       };
     });
   };
@@ -110,12 +151,14 @@ export default class App extends Component {
       answered,
       score,
       nextLevel,
+      endGame,
+      errorSound,
+      winSound,
       ...someProps
     } = this.state;
-    return (
-      <div>
-        <Header score={score} />
-        <Levels round={this.round} />
+
+    let renderedElement = (
+      <React.Fragment>
         <RandomBird questionBird={questionBird} answered={answered} />
         <GameFields
           list={dataSet}
@@ -124,6 +167,17 @@ export default class App extends Component {
           nextLevel={nextLevel}
           onNextLevel={this.onNextLevel}
         />
+      </React.Fragment>
+    );
+    if (endGame) {
+      renderedElement = <GameOver score={score} newGame={this.newGame} />;
+    }
+
+    return (
+      <div>
+        <Header score={score} />
+        <Levels round={this.round} />
+        {renderedElement}
       </div>
     );
   }

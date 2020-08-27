@@ -5,8 +5,8 @@
   cursor: pointer;
 }
 .failed {
-  background-color: tomato;
+  background-color: tomato !important;
 }
 .success {
-  background-color: turquoise;
+  background-color: turquoise !important;
 }

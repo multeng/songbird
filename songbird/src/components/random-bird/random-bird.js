@@ -23,7 +23,7 @@ export default class RandomBird extends Component {
             </li>
             <li className="list-group-item">
               <div className="audio-player">
-                <Player song={song} />
+                <Player song={song} answered={answered} />
               </div>
             </li>
           </ul>

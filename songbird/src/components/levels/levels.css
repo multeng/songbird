@@ -6,3 +6,10 @@
   border-radius: 5px;
   overflow: hidden;
 }
+.page-link{
+  cursor: auto;
+}
+.page-link:hover{
+  background-color: #fff;
+  color: #000;
+}
