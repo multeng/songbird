@@ -1,0 +1,12 @@
+.answer:hover {
+  background-color: #9d9191;
+}
+.answer {
+  cursor: pointer;
+}
+.failed {
+  background-color: tomato !important;
+}
+.success {
+  background-color: turquoise !important;
+}
